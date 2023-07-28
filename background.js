@@ -1,16 +1,20 @@
-// Create a context menu item
+const extension_id = "QIO";
+
 chrome.contextMenus.create({
-    id: "QIO",
+    id: extension_id,
     title: "Generate QR Code",
     contexts: ["selection"],
 });
 
-// Add a click event listener for the context menu item
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
-    if (info.menuItemId === "QIO") {
+    if (info.menuItemId === extension_id) {
         chrome.scripting.executeScript({
-            target: {tabId: tab.id, allFrames: false},
-            files: ['qr.js'],
-        });
+            target: {tabId: tab.id},
+            files: ['qrcode/qrcode.min.js'],
+        }).then(
+        chrome.scripting.executeScript({
+            target: {tabId: tab.id},
+            files: ['qio.js'],
+        }));
     }
 });

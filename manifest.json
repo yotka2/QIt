@@ -1,18 +1,21 @@
-    {
+{
     "manifest_version": 3,
     "name": "QIO",
+    "description": "Generate QR codes for selected texts with a right-click",
     "version": "0.1",
-    "description": "A simple chrome extension that generates QR codes from selected texts",
+
+    "icons": {
+        "128": "images/icon128.png"
+    },
+
     "permissions": [
         "contextMenus",
         "activeTab",
         "scripting"
     ],
+
     "background": {
         "service_worker": "background.js",
         "type": "module"
-    },
-    "icons": {
-        "128": "images/icon128.png"
     }
 }

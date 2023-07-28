@@ -1,0 +1,1 @@
+https://github.com/19z/qrcodejs-fixUTF8
