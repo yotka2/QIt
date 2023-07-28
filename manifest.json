@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "QIO",
+    "name": "QIO", // Todo - name change
     "description": "Generate QR codes for selected texts with a right-click",
     "version": "0.1",
 

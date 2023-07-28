@@ -150,6 +150,7 @@ if (selection_text.length < max_qr_chars) {
         img_array = QRWindow.document.getElementsByTagName('img')
 
         for (var i = 0; i < img_array.length; i++) {
+            // Todo - doesn't work, why and how
             img_array[i].style.display = "inline";
             img_array[i].style.margin = "5px";
         }
