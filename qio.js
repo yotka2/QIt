@@ -97,8 +97,7 @@ if (selection_text.length < max_qr_chars) {
 
     document.body.appendChild(QRDiv);
 
-    // Delete the div when anything else will be clicked
-    document.addEventListener("click", function(event) {
+    function deleteQRDiv(event) {
         var clickedElement = event.target;
         // If the clicked element is not a child of the div
         while (clickedElement !== null) {
@@ -108,7 +107,11 @@ if (selection_text.length < max_qr_chars) {
             clickedElement = clickedElement.parentElement;
         }
         QRDiv.remove();
-    });
+    }
+
+    // Delete the div when anything else will be clicked
+    document.addEventListener("click", deleteQRDiv);
+    document.addEventListener("contextmenu", deleteQRDiv);
 } else {
     // Todo: Create link to a multi-qr window
     console.log("Couldn't create a QR code from " + selection_text.length + " characters");
