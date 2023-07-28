@@ -126,6 +126,7 @@ if (selection_text.length < max_qr_chars) {
     var linkDiv = create_tooltip_div(!tooltip_on_top);
 
     linkDiv.children[0].innerHTML = "Text too long for a single QR Code. Click here to open all QRs in a new tab";
+    linkDiv.children[0].style.color = colorDark;
 
     linkDiv.style.left = rect.left - 15 + "px";
     if (tooltip_on_top) {
