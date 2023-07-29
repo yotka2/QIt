@@ -1,5 +1,5 @@
 // Todo: Why doesn't 1273 always work?
-var max_qr_chars = 1100;
+var max_qr_chars = 800;
 
 // Todo: Consts
 var colorLight = "#f0f8ff";
@@ -140,24 +140,27 @@ if (selection_text.length < max_qr_chars) {
     }
 
     function openQRWindow() {
-        var QRWindow = window.open();
-        var QRDiv = QRWindow.document.createElement("div");
+        var QRWindow = window.open(chrome.runtime.getURL("qr_list_page.html"));
 
-        var qr_text_array = [];
+        // Todo - modify the qrcode library so this div isn't needed
+        var tmp_qr_div = document.createElement("div");
 
-        for (var i = 0; i < selection_text.length; i += max_qr_chars) {
-            var qr_text = selection_text.substring(i, i + max_qr_chars);
 
-            new QRCode(QRDiv, { text: qr_text });
-        }
+        // Todo - we need to wait properly for the QRWindow to load.
+        // The previous method was for it to send us a message when it loads (using window.opener).
+        // However, window.opener seems to be null when opened from some sites, even when specifying rel="opener".
+        window.addEventListener('message', receiveMessage);
 
-        QRWindow.document.body.appendChild(QRDiv);
-        img_array = QRWindow.document.getElementsByTagName('img')
+        function receiveMessage(event) {
+            if (event.data == "childReady") {
+                for (var i = 0; i < selection_text.length; i += max_qr_chars) {
+                    var qr_text = selection_text.substring(i, i + max_qr_chars);
 
-        for (var i = 0; i < img_array.length; i++) {
-            // Todo - doesn't work, why and how
-            img_array[i].style.display = "inline";
-            img_array[i].style.margin = "5px";
+                    var qrcode = new QRCode(tmp_qr_div, { text: qr_text });
+                    var qr_img = qrcode._oDrawing._elCanvas.toDataURL("image/png");
+                    QRWindow.postMessage(JSON.stringify({text: qr_text, src: qr_img}), '*');
+                }
+            }
         }
     }
 

@@ -14,6 +14,11 @@
         "scripting"
     ],
 
+    "web_accessible_resources": [{
+        "resources": ["qr_list_page.html", "qr_list_page.js"],
+        "matches": ["<all_urls>"]
+    }],
+
     "background": {
         "service_worker": "background.js",
         "type": "module"

@@ -1,9 +1,11 @@
 const extension_id = "QIt";
 
-chrome.contextMenus.create({
-    id: extension_id,
-    title: "Generate QR Code",
-    contexts: ["selection"],
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.contextMenus.create({
+        id: extension_id,
+        title: "Generate QR Code",
+        contexts: ["selection"],
+    });
 });
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
