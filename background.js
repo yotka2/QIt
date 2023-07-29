@@ -1,4 +1,4 @@
-const extension_id = "QIO";
+const extension_id = "QIt";
 
 chrome.contextMenus.create({
     id: extension_id,
@@ -14,7 +14,7 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
         }).then(
         chrome.scripting.executeScript({
             target: {tabId: tab.id},
-            files: ['qio.js'],
+            files: ['qit.js'],
         }));
     }
 });
