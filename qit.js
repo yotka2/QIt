@@ -68,6 +68,24 @@ function create_tooltip_div(arrow_on_top) {
     return tooltip_div;
 }
 
+function delete_div_on_outside_click(div) {
+    function deleteDiv(event) {
+        var clickedElement = event.target;
+        // If the clicked element is not a child of the div
+        while (clickedElement !== null) {
+            if (clickedElement === div) {
+                return;
+            }
+            clickedElement = clickedElement.parentElement;
+        }
+        div.remove();
+    }
+
+    // Delete the div when anything else will be clicked
+    document.addEventListener("click", deleteDiv);
+    document.addEventListener("contextmenu", deleteDiv);
+}
+
 if (selection_text.length < max_qr_chars) {
     // Todo: smarter size according to text length
     var qr_svg_size_px = 64 + selection_text.length;
@@ -100,21 +118,7 @@ if (selection_text.length < max_qr_chars) {
 
     document.body.appendChild(QRDiv);
 
-    function deleteQRDiv(event) {
-        var clickedElement = event.target;
-        // If the clicked element is not a child of the div
-        while (clickedElement !== null) {
-            if (clickedElement === QRDiv) {
-                return;
-            }
-            clickedElement = clickedElement.parentElement;
-        }
-        QRDiv.remove();
-    }
-
-    // Delete the div when anything else will be clicked
-    document.addEventListener("click", deleteQRDiv);
-    document.addEventListener("contextmenu", deleteQRDiv);
+    delete_div_on_outside_click(QRDiv);
 } else {
     var rect = get_bounding_rect(selection_element);
 
@@ -161,19 +165,5 @@ if (selection_text.length < max_qr_chars) {
 
     document.body.appendChild(linkDiv);
 
-    function deletelinkDiv(event) {
-        var clickedElement = event.target;
-        // If the clicked element is not a child of the div
-        while (clickedElement !== null) {
-            if (clickedElement === linkDiv) {
-                return;
-            }
-            clickedElement = clickedElement.parentElement;
-        }
-        linkDiv.remove();
-    }
-
-    // Delete the div when anything else will be clicked
-    document.addEventListener("click", deletelinkDiv);
-    document.addEventListener("contextmenu", deletelinkDiv);
+    delete_div_on_outside_click(linkDiv);
 }
