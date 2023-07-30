@@ -20,3 +20,10 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
         }));
     }
 });
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    // Todo - verify message origin
+    if (request.jsons) {
+        chrome.tabs.create({'url': chrome.runtime.getURL("qr_list_page.html") + '?data=' + encodeURIComponent(JSON.stringify(request))});
+    }
+});

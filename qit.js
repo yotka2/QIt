@@ -236,19 +236,7 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
                 if (text_left) {
                     create_next_qr();
                 } else {
-                    var QRWindow = window.open(chrome.runtime.getURL("qr_list_page.html"));
-
-                    // Todo - we need to wait properly for the QRWindow to load.
-                    // The previous method was for it to send us a message when it loads (using window.opener).
-                    // However, window.opener seems to be null when opened from some sites, even when specifying rel="opener".
-                    window.addEventListener('message', receiveMessage);
-
-                    function receiveMessage(event) {
-                        if (event.data == "childReady") {
-                            QRWindow.postMessage(JSON.stringify({jsons: jsons}), '*');
-                            window.removeEventListener('message', receiveMessage);
-                        }
-                    }
+                    chrome.runtime.sendMessage({jsons: jsons});
                 }
             }, 5);
         }

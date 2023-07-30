@@ -1,78 +1,65 @@
 document.addEventListener("DOMContentLoaded", function() {
-    window.opener.postMessage('childReady', '*');
-
     var QRTextDiv = document.getElementById("QRText");
     
     var QRContainerDiv = document.getElementById("qr-container");
 
-    window.addEventListener('message', receiveMessage);
+    json = JSON.parse(new URLSearchParams(location.search).get('data'));
+    var jsons = json.jsons;
 
-    function receiveMessage(event) {
-        if (event.source !== window.opener) {
-            console.warn('Received message from an unknown source.');
-            return;
-        }
+    var full_text = "";
 
-        // Access the data sent from the parent window
-        var json = JSON.parse(event.data);
-        var jsons = json.jsons;
+    for (i = 0; i < jsons.length; i++) {
+        img_src = jsons[i].src;
 
-        var full_text = "";
+        var image_box = document.createElement('div');
+        image_box.classList.add("image-box");
 
-        for (i = 0; i < jsons.length; i++) {
-            img_src = jsons[i].src;
+        var label = document.createElement('label');
+        label.innerText = "QR #" + (i + 1);
 
-            var image_box = document.createElement('div');
-            image_box.classList.add("image-box");
+        image_box.appendChild(label);
 
-            var label = document.createElement('label');
-            label.innerText = "QR #" + (i + 1);
+        var qr_code_div = document.createElement('div');
+        qr_code_div.classList.add("qr-code");
 
-            image_box.appendChild(label);
+        var img = document.createElement('img');
+        img.src = img_src;
+        image_box.title = jsons[i].text;
+        img.width = 256;
+        img.height = 256;
 
-            var qr_code_div = document.createElement('div');
-            qr_code_div.classList.add("qr-code");
+        qr_code_div.appendChild(img);
 
-            var img = document.createElement('img');
-            img.src = img_src;
-            image_box.title = jsons[i].text;
-            img.width = 256;
-            img.height = 256;
+        var back_content = document.createElement('div');
+        back_content.classList.add("back-content");
+        back_content.innerText = "QR #" + (i + 1) + " is hidden"
 
-            qr_code_div.appendChild(img);
+        qr_code_div.appendChild(back_content);
 
-            var back_content = document.createElement('div');
-            back_content.classList.add("back-content");
-            back_content.innerText = "QR #" + (i + 1) + " is hidden"
+        image_box.appendChild(qr_code_div);
 
-            qr_code_div.appendChild(back_content);
+        qr_code_div.addEventListener("click", function() {
+            this.classList.toggle("flipped");
+        });
 
-            image_box.appendChild(qr_code_div);
+        QRContainerDiv.appendChild(image_box);
 
-            qr_code_div.addEventListener("click", function() {
-                this.classList.toggle("flipped");
-            });
-
-            QRContainerDiv.appendChild(image_box);
-
-            full_text += jsons[i].text;
-        }
-
-        QRTextDiv.innerText = full_text;
-
-        var WaitingQRsDiv = document.getElementById("wait-qrs");
-        WaitingQRsDiv.remove();
-        var QRContentDiv = document.getElementById("qr-content");
-        QRContentDiv.style.visibility = "visible";
+        full_text += jsons[i].text;
     }
-    
+
+    QRTextDiv.innerText = full_text;
+
+    var WaitingQRsDiv = document.getElementById("wait-qrs");
+    WaitingQRsDiv.remove();
+    var QRContentDiv = document.getElementById("qr-content");
+    QRContentDiv.style.visibility = "visible";
+
     const flipAllButton = document.querySelector(".flip-all-button");
 
     flipAllButton.addEventListener("click", function() {
         const qrCodes = document.querySelectorAll(".qr-code");
         qrCodes.forEach((qrCode) => {
-        qrCode.classList.toggle("flipped");
+            qrCode.classList.toggle("flipped");
         });
     });
-
 });
