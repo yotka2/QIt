@@ -161,34 +161,78 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
     }
 
     function openQRWindow() {
-        var QRWindow = window.open(chrome.runtime.getURL("qr_list_page.html"));
-
         // Todo - modify the qrcode library so this div isn't needed
         var tmp_qr_div = document.createElement("div");
 
+        linkDiv.children[0].innerHTML = "Generating QRs...";
 
-        // Todo - we need to wait properly for the QRWindow to load.
-        // The previous method was for it to send us a message when it loads (using window.opener).
-        // However, window.opener seems to be null when opened from some sites, even when specifying rel="opener".
-        window.addEventListener('message', receiveMessage);
+        var progressBar = document.createElement("div");
+        progressBar.style.width = '0%';
+        progressBar.style.height = '20px';
+        progressBar.style.backgroundColor = '#4CAF50';
+        progressBar.style.borderRadius = '5px';
 
-        function receiveMessage(event) {
-            if (event.data == "childReady") {
-                while (selection_text) {
-                    var index = get_max_utf_substring(selection_text, max_qr_chars);
-                    var qr_text = selection_text.substring(0, index);
+        var progressBarContainer = document.createElement("div");
+        progressBarContainer.style.width = '100%';
+        progressBarContainer.style.height = '20px';
+        progressBarContainer.style.backgroundColor = '#ccc';
+        progressBarContainer.style.borderRadius = '5px';
 
-                    var qrcode = new QRCode(tmp_qr_div, { text: qr_text });
-                    var qr_img = qrcode._oDrawing._elCanvas.toDataURL("image/png");
-                    QRWindow.postMessage(JSON.stringify({text: qr_text, src: qr_img}), '*');
-                    // Todo - why are all messages sent at once?
+        progressBarContainer.appendChild(progressBar);
+        linkDiv.children[0].appendChild(progressBarContainer);
 
-                    selection_text = selection_text.substring(index, selection_text.length);
-                }
-            }
+        var jsons = [];
 
-            window.removeEventListener('message', receiveMessage);
+        var steps = 0;
+        var text_left = selection_text;
+        while (text_left) {
+            var index = get_max_utf_substring(text_left, max_qr_chars);
+            text_left = text_left.substring(index, text_left.length);
+            steps += 1;
         }
+
+        var current_steps = 0;
+        var progressBarWidth = 0;
+
+        function create_next_qr() {
+            var index = get_max_utf_substring(selection_text, max_qr_chars);
+            var qr_text = selection_text.substring(0, index);
+
+            current_steps++;
+            console.log("Step " + current_steps + " out of " + steps + ": QR of " + qr_text.length + " chars (" + get_utf_str_length(qr_text) + " UTF)");
+            progressBarWidth = (current_steps / steps) * 100;
+            progressBar.style.width = progressBarWidth + '%';
+
+            setTimeout(function() {
+                var qrcode = new QRCode(tmp_qr_div, { text: qr_text });
+                var qr_img = qrcode._oDrawing._elCanvas.toDataURL("image/png");
+                jsons.push(JSON.stringify({text: qr_text, src: qr_img}));
+
+                selection_text = selection_text.substring(index, selection_text.length);
+
+                if (selection_text) {
+                    create_next_qr();
+                } else {
+                    var QRWindow = window.open(chrome.runtime.getURL("qr_list_page.html"));
+
+                    // Todo - we need to wait properly for the QRWindow to load.
+                    // The previous method was for it to send us a message when it loads (using window.opener).
+                    // However, window.opener seems to be null when opened from some sites, even when specifying rel="opener".
+                    window.addEventListener('message', receiveMessage);
+
+                    function receiveMessage(event) {
+                        if (event.data == "childReady") {
+                            for (i = 0; i < jsons.length; i++) {
+                                QRWindow.postMessage(jsons[i], '*');
+                            }
+                        }
+
+                        window.removeEventListener('message', receiveMessage);
+                    }
+                }
+            }, 100);
+        }
+        create_next_qr();
     }
 
     linkDiv.onclick = openQRWindow;
