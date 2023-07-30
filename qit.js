@@ -6,7 +6,7 @@ var colorLight = "#f0f8ff";
 var colorDark = "#000000";
 var arrow_to_text_margin_px = 40;
 var min_margin_top_px = 5;
-var max_qr_size_px = 480; // Something something assume ~1000px screen height
+var max_qr_size_px = 300;
 
 var selection_element = window.getSelection();
 var selection_text = selection_element.toString();
