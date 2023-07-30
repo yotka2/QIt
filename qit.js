@@ -1,3 +1,4 @@
+chrome.storage.sync.get("JRHC_mode", function(data) {
 // Todo: Why doesn't 1273 always work?
 var max_qr_chars = 800;
 
@@ -7,10 +8,6 @@ var colorDark = "#000000";
 var arrow_to_text_margin_px = 40;
 var min_margin_top_px = 5;
 var max_qr_size_px = 300;
-
-var selection_element = window.getSelection();
-var selection_text = selection_element.toString();
-
 
 function get_bounding_rect(selection_element) {
     // Bounding box of the first row
@@ -121,6 +118,17 @@ function create_qrcode(child, json) {
 
     json.correctLevel = correctLevel;
     return new QRCode(child, json);
+}
+
+function text_to_JRHC_format(text) {
+    return text.replace('\n', '\r\n');
+}
+
+var selection_element = window.getSelection();
+var selection_text = selection_element.toString();
+
+if (data.JRHC_mode) {
+    selection_text = text_to_JRHC_format(selection_text);
 }
 
 if (get_utf_str_length(selection_text) < max_qr_chars) {
@@ -249,3 +257,4 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
 
     delete_div_on_outside_click(linkDiv);
 }
+});
