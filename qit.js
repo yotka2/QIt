@@ -107,6 +107,21 @@ function get_max_utf_substring(str, max_len) {
     return str.length;
 }
 
+function create_qrcode(child, json) {
+    correctLevel = QRCode.CorrectLevel.H;
+    var qr_text_utf_length = get_utf_str_length(json.text);
+
+    // qrcode.js has a bug with CorrectLevel.H with strings between 195 and 220 characters
+    // https://stackoverflow.com/questions/30796584/qrcode-js-error-code-length-overflow-17161056
+    // Todo - fix
+    if (qr_text_utf_length >= 195 && qr_text_utf_length <= 220) {
+        correctLevel = QRCode.CorrectLevel.Q;
+    }
+
+    json.correctLevel = correctLevel;
+    return new QRCode(child, json);
+}
+
 if (get_utf_str_length(selection_text) < max_qr_chars) {
     // Todo: smarter size according to text length
     var qr_svg_size_px = 64 + selection_text.length;
@@ -123,7 +138,7 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
     var QRDiv = create_tooltip_div(!tooltip_on_top);
 
     // Todo: Is there a less ugly way?
-    new QRCode(QRDiv.children[0], { text: selection_text, colorDark : colorDark, colorLight : colorLight, useSVG: true });
+    create_qrcode(QRDiv.children[0], { text: selection_text, colorDark : colorDark, colorLight : colorLight, useSVG: true });
     var QRSvg = QRDiv.children[0].children[0];
     QRSvg.setAttribute("shape-rendering", "crispEdges");
     QRSvg.style.width = qr_svg_size_px + "px";
@@ -211,7 +226,7 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
             progressBar.style.width = progressBarWidth + '%';
 
             setTimeout(function() {
-                var qrcode = new QRCode(tmp_qr_div, { text: qr_text });
+                var qrcode = create_qrcode(tmp_qr_div, { text: qr_text });
                 var qr_img = qrcode._oDrawing._elCanvas.toDataURL("image/png");
                 jsons.push(JSON.stringify({text: qr_text, src: qr_img}));
 
