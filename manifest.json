@@ -14,6 +14,10 @@
         "scripting"
     ],
 
+    "host_permissions": [
+        "<all_urls>"
+    ],
+
     "web_accessible_resources": [{
         "resources": ["qr_list_page.html", "qr_list_page.js"],
         "matches": ["<all_urls>"]
