@@ -145,6 +145,15 @@ if (selection_text.length < max_qr_chars) {
         // Todo - modify the qrcode library so this div isn't needed
         var tmp_qr_div = document.createElement("div");
 
+        var qr_imgs = [];
+
+       for (var i = 0; i < selection_text.length; i += max_qr_chars) {
+            var qr_text = selection_text.substring(i, i + max_qr_chars);
+
+            var qrcode = new QRCode(tmp_qr_div, { text: qr_text });
+            var qr_img = qrcode._oDrawing._elCanvas.toDataURL("image/png");
+            qr_imgs.push({src: qr_img, text: qr_text});
+        }
 
         // Todo - we need to wait properly for the QRWindow to load.
         // The previous method was for it to send us a message when it loads (using window.opener).
@@ -153,13 +162,7 @@ if (selection_text.length < max_qr_chars) {
 
         function receiveMessage(event) {
             if (event.data == "childReady") {
-                for (var i = 0; i < selection_text.length; i += max_qr_chars) {
-                    var qr_text = selection_text.substring(i, i + max_qr_chars);
-
-                    var qrcode = new QRCode(tmp_qr_div, { text: qr_text });
-                    var qr_img = qrcode._oDrawing._elCanvas.toDataURL("image/png");
-                    QRWindow.postMessage(JSON.stringify({text: qr_text, src: qr_img}), '*');
-                }
+                QRWindow.postMessage(JSON.stringify({full_text: selection_text, qr_imgs: qr_imgs}), '*');
             }
         }
     }
