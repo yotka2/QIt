@@ -31,6 +31,7 @@ function create_tooltip_div(arrow_on_top) {
     tooltip_div.style.borderRadius = "10px";
     tooltip_div.style.position = "absolute";
     tooltip_div.style.zIndex = "9999";
+    tooltip_div.style.direction = "ltr";
 
     var contentDiv = document.createElement("div");
     tooltip_div.appendChild(contentDiv);
