@@ -1,5 +1,5 @@
-chrome.storage.sync.get("JRHC_mode", function(data) {
-// Todo: Why doesn't 1273 always work?
+chrome.storage.sync.get(["noprompt_multiple", "JRHC_mode"], function(data) {
+// Todo: does 1273 always work?
 var max_qr_chars = 800;
 
 // Todo: Consts
@@ -171,10 +171,7 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
     if (rect.top > arrow_to_text_margin_px + min_margin_top_px) {
         tooltip_on_top = true;
     }
-
     var linkDiv = create_tooltip_div(!tooltip_on_top);
-
-    linkDiv.children[0].innerHTML = "Text too long for a single QR Code. Click here to open all QRs in a new tab";
     linkDiv.children[0].style.color = colorDark;
 
     linkDiv.style.left = rect.left - 15 + "px";
@@ -251,9 +248,14 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
         create_next_qr();
     }
 
-    linkDiv.onclick = openQRWindow;
-
-    document.body.appendChild(linkDiv);
+    if (data.noprompt_multiple) {
+        document.body.appendChild(linkDiv);
+        openQRWindow();
+    } else {
+        linkDiv.children[0].innerHTML = "Text too long for a single QR Code. Click here to open all QRs in a new tab";
+        linkDiv.onclick = openQRWindow;
+        document.body.appendChild(linkDiv);
+    }
 
     delete_div_on_outside_click(linkDiv);
 }
