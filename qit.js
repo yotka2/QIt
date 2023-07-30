@@ -164,6 +164,8 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
         // Todo - modify the qrcode library so this div isn't needed
         var tmp_qr_div = document.createElement("div");
 
+        var previous_linkdiv_height = linkDiv.clientHeight;
+
         linkDiv.children[0].innerHTML = "Generating QRs...";
 
         var progressBar = document.createElement("div");
@@ -180,6 +182,10 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
 
         progressBarContainer.appendChild(progressBar);
         linkDiv.children[0].appendChild(progressBarContainer);
+
+        if (tooltip_on_top) {
+            linkDiv.style.top = parseInt(linkDiv.style.top, 10) + previous_linkdiv_height - linkDiv.clientHeight + "px";
+        }
 
         var jsons = [];
 
