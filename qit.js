@@ -230,7 +230,7 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
                         window.removeEventListener('message', receiveMessage);
                     }
                 }
-            }, 100);
+            }, 5);
         }
         create_next_qr();
     }
