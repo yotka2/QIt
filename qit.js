@@ -81,7 +81,7 @@ function delete_div_on_outside_click(div) {
         div.remove();
 
         document.removeEventListener("click", deleteDiv);
-        document.addEventListener("contextmenu", deleteDiv);
+        document.removeEventListener("contextmenu", deleteDiv);
     }
 
     // Delete the div when anything else will be clicked
