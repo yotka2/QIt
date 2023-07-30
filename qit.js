@@ -1,5 +1,5 @@
 // Todo: Why doesn't 1273 always work?
-var max_qr_chars = 800;
+var max_qr_chars = 1200;
 
 // Todo: Consts
 var colorLight = "#f0f8ff";
@@ -86,7 +86,25 @@ function delete_div_on_outside_click(div) {
     document.addEventListener("contextmenu", deleteDiv);
 }
 
-if (selection_text.length < max_qr_chars) {
+function get_utf_str_length(str) {
+    return (new TextEncoder().encode(str)).length
+}
+
+function get_max_utf_substring(str, max_len) {
+    var utf_len = 0;
+
+    for (var i = 0; i < str.length; i++) {
+        var current_len = get_utf_str_length(str[i]);
+        if (utf_len + current_len > max_len) {
+            return i;
+        }
+        utf_len += current_len;
+    }
+
+    return str.length;
+}
+
+if (get_utf_str_length(selection_text) < max_qr_chars) {
     // Todo: smarter size according to text length
     var qr_svg_size_px = 64 + selection_text.length;
     if (qr_svg_size_px > max_qr_size_px) {
@@ -153,12 +171,16 @@ if (selection_text.length < max_qr_chars) {
 
         function receiveMessage(event) {
             if (event.data == "childReady") {
-                for (var i = 0; i < selection_text.length; i += max_qr_chars) {
-                    var qr_text = selection_text.substring(i, i + max_qr_chars);
+                while (selection_text) {
+                    var index = get_max_utf_substring(selection_text, max_qr_chars);
+                    var qr_text = selection_text.substring(0, index);
 
                     var qrcode = new QRCode(tmp_qr_div, { text: qr_text });
                     var qr_img = qrcode._oDrawing._elCanvas.toDataURL("image/png");
                     QRWindow.postMessage(JSON.stringify({text: qr_text, src: qr_img}), '*');
+                    // Todo - why are all messages sent at once?
+
+                    selection_text = selection_text.substring(index, selection_text.length);
                 }
             }
         }
