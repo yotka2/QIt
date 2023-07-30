@@ -193,10 +193,11 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
 
         var current_steps = 0;
         var progressBarWidth = 0;
+        text_left = selection_text;
 
         function create_next_qr() {
-            var index = get_max_utf_substring(selection_text, max_qr_chars);
-            var qr_text = selection_text.substring(0, index);
+            var index = get_max_utf_substring(text_left, max_qr_chars);
+            var qr_text = text_left.substring(0, index);
 
             current_steps++;
             console.log("Step " + current_steps + " out of " + steps + ": QR of " + qr_text.length + " chars (" + get_utf_str_length(qr_text) + " UTF)");
@@ -208,9 +209,9 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
                 var qr_img = qrcode._oDrawing._elCanvas.toDataURL("image/png");
                 jsons.push(JSON.stringify({text: qr_text, src: qr_img}));
 
-                selection_text = selection_text.substring(index, selection_text.length);
+                text_left = text_left.substring(index, text_left.length);
 
-                if (selection_text) {
+                if (text_left) {
                     create_next_qr();
                 } else {
                     var QRWindow = window.open(chrome.runtime.getURL("qr_list_page.html"));
