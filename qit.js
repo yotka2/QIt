@@ -229,7 +229,7 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
             setTimeout(function() {
                 var qrcode = create_qrcode(tmp_qr_div, { text: qr_text });
                 var qr_img = qrcode._oDrawing._elCanvas.toDataURL("image/png");
-                jsons.push(JSON.stringify({text: qr_text, src: qr_img}));
+                jsons.push({text: qr_text, src: qr_img});
 
                 text_left = text_left.substring(index, text_left.length);
 
@@ -245,12 +245,9 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
 
                     function receiveMessage(event) {
                         if (event.data == "childReady") {
-                            for (i = 0; i < jsons.length; i++) {
-                                QRWindow.postMessage(jsons[i], '*');
-                            }
+                            QRWindow.postMessage(JSON.stringify({jsons: jsons}), '*');
+                            window.removeEventListener('message', receiveMessage);
                         }
-
-                        window.removeEventListener('message', receiveMessage);
                     }
                 }
             }, 5);
