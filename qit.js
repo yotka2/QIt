@@ -1,5 +1,5 @@
 // Todo: Why doesn't 1273 always work?
-var max_qr_chars = 1200;
+var max_qr_chars = 800;
 
 // Todo: Consts
 var colorLight = "#f0f8ff";
@@ -79,6 +79,9 @@ function delete_div_on_outside_click(div) {
             clickedElement = clickedElement.parentElement;
         }
         div.remove();
+
+        document.removeEventListener("click", deleteDiv);
+        document.addEventListener("contextmenu", deleteDiv);
     }
 
     // Delete the div when anything else will be clicked
@@ -183,6 +186,8 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
                     selection_text = selection_text.substring(index, selection_text.length);
                 }
             }
+
+            window.removeEventListener('message', receiveMessage);
         }
     }
 
