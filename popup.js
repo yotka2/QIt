@@ -1,5 +1,6 @@
 const flags = [
     // Todo - add tooltip
+    { id: 'noprompt_multiple', label: "Don't prompt before opening new window" },
     { id: 'JRHC_mode', label: 'JRHC Mode (add CRs to LFs)' },
 ];
 
