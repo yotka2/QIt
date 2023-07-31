@@ -1,6 +1,10 @@
 chrome.storage.sync.get(["noprompt_multiple", "JRHC_mode"], function(data) {
 // Todo: does 1273 always work?
 var max_qr_chars = 800;
+if  (data.JRHC_mode) {
+    max_qr_chars = 500;
+}
+
 
 // Todo: Consts
 var colorLight = "#f0f8ff";
@@ -121,7 +125,7 @@ function create_qrcode(child, json) {
 }
 
 function text_to_JRHC_format(text) {
-    return text.replace('\n', '\r\n');
+    return text.replaceAll('\n', '\r\n');
 }
 
 var selection_element = window.getSelection();
