@@ -122,12 +122,13 @@
                 margin: 0 auto;
                 word-wrap: break-word;
                 max-width: 50%;
-                text-align: center;
                 font-size: 10px;
                 padding: 10px;
                 border: 2px solid #ccc;
                 border-radius: 5px;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                white-space: pre-wrap;
+                font-family: monospace;
             }
         </style>
         <script src="qr_list_page.js"></script>
@@ -148,7 +149,7 @@
                 Full text:
             </div>
             <div id="QRTextContainer">
-                <div id="QRText">
+                <div id="QRText" dir="auto">
                 </div>
             </div>
         </div>
