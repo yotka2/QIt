@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var QRContainerDiv = document.getElementById("qr-container");
 
     json = JSON.parse(new URLSearchParams(location.search).get('data'));
+    var silent_qrs = json.silent_qrs;
     var jsons = json.jsons;
 
     var full_text = "";
@@ -18,15 +19,21 @@ document.addEventListener("DOMContentLoaded", function() {
         label.innerText = "QR #" + (i + 1);
 
         image_box.appendChild(label);
+        if (!silent_qrs) {
+            image_box.title = jsons[i].text;
+        }
 
         var qr_code_div = document.createElement('div');
         qr_code_div.classList.add("qr-code");
 
         var img = document.createElement('img');
         img.src = img_src;
-        image_box.title = jsons[i].text;
         img.width = 256;
         img.height = 256;
+
+        if (silent_qrs) {
+            qr_code_div.style.cursor = "none";
+        }
 
         qr_code_div.appendChild(img);
 

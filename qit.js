@@ -1,4 +1,4 @@
-chrome.storage.sync.get(["noprompt_multiple", "imager_mode"], function(data) {
+chrome.storage.sync.get(["noprompt_multiple", "imager_mode", "silent_qrs"], function(data) {
 // Todo: does 1273 always work?
 var max_qr_chars = 800;
 if  (data.imager_mode) {
@@ -165,6 +165,11 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
         QRDiv.style.top = (rect.top + window.scrollY - QRDiv.offsetHeight + arrow_to_text_margin_px) + "px";
     }
 
+    if (data.silent_qrs) {
+        QRDiv.children[0].removeAttribute("title");
+        QRDiv.children[0].style.cursor = "none";
+    }
+
     document.body.appendChild(QRDiv);
 
     delete_div_on_outside_click(QRDiv);
@@ -245,7 +250,7 @@ if (get_utf_str_length(selection_text) < max_qr_chars) {
                 if (text_left) {
                     create_next_qr();
                 } else {
-                    chrome.runtime.sendMessage({jsons: jsons});
+                    chrome.runtime.sendMessage({jsons: jsons, silent_qrs: data.silent_qrs});
                 }
             }, 5);
         }

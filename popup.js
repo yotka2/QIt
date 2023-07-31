@@ -2,6 +2,7 @@ const flags = [
     // Todo - add tooltip
     { id: 'noprompt_multiple', label: "Don't prompt before opening new window" },
     { id: 'imager_mode', label: 'Imager Mode' },
+    { id: 'silent_qrs', label: 'Hide Cursor and Alt Text on Hover' },
 ];
 
 // Function to load settings from Chrome storage
