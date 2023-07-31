@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     var full_text = "";
 
+    if (!silent_qrs) {
+        var QRFeatureDesc = document.getElementById("qr-feature-desc");
+        QRFeatureDesc.innerText += ", hover over QRs for their text";
+    }
+
     for (i = 0; i < jsons.length; i++) {
         img_src = jsons[i].src;
 
