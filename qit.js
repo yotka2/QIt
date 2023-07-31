@@ -1,7 +1,7 @@
-chrome.storage.sync.get(["noprompt_multiple", "JRHC_mode"], function(data) {
+chrome.storage.sync.get(["noprompt_multiple", "imager_mode"], function(data) {
 // Todo: does 1273 always work?
 var max_qr_chars = 800;
-if  (data.JRHC_mode) {
+if  (data.imager_mode) {
     max_qr_chars = 500;
 }
 
@@ -124,15 +124,15 @@ function create_qrcode(child, json) {
     return new QRCode(child, json);
 }
 
-function text_to_JRHC_format(text) {
+function text_to_imager_format(text) {
     return text.replaceAll('\n', '\r\n');
 }
 
 var selection_element = window.getSelection();
 var selection_text = selection_element.toString();
 
-if (data.JRHC_mode) {
-    selection_text = text_to_JRHC_format(selection_text);
+if (data.imager_mode) {
+    selection_text = text_to_imager_format(selection_text);
 }
 
 if (get_utf_str_length(selection_text) < max_qr_chars) {
